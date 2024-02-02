@@ -79,7 +79,7 @@ def send_email():
     # 电子邮件配置
     sender_email = os.environ['SENDER_EMAIL']
     sender_password = os.environ['SENDER_PASSWORD']
-    receiver_email = 'rss@bxin.top,chushankeji@163.com,pinhsin@189.cn'
+    receiver_email = 'pinhsin@189.cn'
 
     current_date = datetime.now().strftime("%Y%m%d")
     # 构建邮件内容
