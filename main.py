@@ -83,7 +83,7 @@ def send_email():
 
     current_date = datetime.now().strftime("%Y%m%d")
     # 构建邮件内容
-    article_content = f"{current_date}"
+    article_content = f"{current_date} \n Github:https://github.com/ZhouBinxin/Convertible_bonds"
 
     # 创建MIMEText对象
     msg = MIMEMultipart()
