@@ -39,14 +39,16 @@ def save_to_csv(data):
     # Extract the desired data
     desired_data = []
     row = data["tables"][0]["table"]
-    desired_data.append([row["jydm"], row["jydm_mc"], row["p00868_f002"], row["p00868_f016"], row["p00868_f007"],
-                         row["p00868_f006"], row["p00868_f001"], row["p00868_f028"], row["p00868_f011"],
-                         row["p00868_f005"], row["p00868_f014"], row["p00868_f008"], row["p00868_f003"],
-                         row["p00868_f026"], row["p00868_f023"], row["p00868_f004"], row["p00868_f012"],
-                         row["p00868_f017"], row["p00868_f024"], row["p00868_f019"], row["p00868_f027"],
-                         row["p00868_f018"], row["p00868_f022"], row["p00868_f021"], row["p00868_f015"],
-                         row["p00868_f010"], row["p00868_f025"], row["p00868_f009"], row["p00868_f029"],
-                         row["p00868_f013"], row["p00868_f020"], row["p00868_f030"]])
+    jydm = row["jydm"]
+    for i in range(len(jydm)):
+        desired_data.append([row["jydm"][i], row["jydm_mc"][i], row["p00868_f002"][i], row["p00868_f016"][i], row["p00868_f007"][i],
+                             row["p00868_f006"][i], row["p00868_f001"][i], row["p00868_f028"][i], row["p00868_f011"][i],
+                             row["p00868_f005"][i], row["p00868_f014"][i], row["p00868_f008"][i], row["p00868_f003"][i],
+                             row["p00868_f026"][i], row["p00868_f023"][i], row["p00868_f004"][i], row["p00868_f012"][i],
+                             row["p00868_f017"][i], row["p00868_f024"][i], row["p00868_f019"][i], row["p00868_f027"][i],
+                             row["p00868_f018"][i], row["p00868_f022"][i], row["p00868_f021"][i], row["p00868_f015"][i],
+                             row["p00868_f010"][i], row["p00868_f025"][i], row["p00868_f009"][i], row["p00868_f029"][i],
+                             row["p00868_f013"][i], row["p00868_f020"][i], row["p00868_f030"][i]])
 
     # Rename the column headers
     new_headers = ["代码", "名称", "交易日期", "前收盘价", "开盘价", "最高价", "最低价", "收盘价", "涨跌",
@@ -67,7 +69,6 @@ def save_to_csv(data):
 
 def get_access_token(refreshToken):
     getAccessTokenUrl = 'https://ft.10jqka.com.cn/api/v1/get_access_token'
-    refreshToken = 'eyJzaWduX3RpbWUiOiIyMDI0LTAyLTAxIDIyOjA3OjAxIn0=.eyJ1aWQiOiI3MDYyNjk0MzUiLCJ1c2VyIjp7ImFjY291bnQiOiJ6dHN4MDUxIiwiYXV0aFVzZXJJbmZvIjp7fSwiY29kZUNTSSI6W10sImNvZGVaekF1dGgiOltdLCJoYXNBSVByZWRpY3QiOmZhbHNlLCJoYXNBSVRhbGsiOmZhbHNlLCJoYXNDSUNDIjpmYWxzZSwiaGFzQ1NJIjpmYWxzZSwiaGFzRXZlbnREcml2ZSI6ZmFsc2UsImhhc0ZUU0UiOmZhbHNlLCJoYXNGdW5kVmFsdWF0aW9uIjpmYWxzZSwiaGFzSEsiOnRydWUsImhhc0xNRSI6ZmFsc2UsImhhc0xldmVsMiI6ZmFsc2UsImhhc1VTIjpmYWxzZSwiaGFzVVNBSW5kZXgiOmZhbHNlLCJtYXJrZXRDb2RlIjoiMTY7MzI7MTQ0Ozk2OzE3NjsxMTI7ODg7NDg7MTI4OzE2OC0xOzE4NDsyMDA7MjE2OzEwNDsxMjA7MTM2OzIzMjs1Njs2NDsiLCJtYXhPbkxpbmUiOjEsIm5vRGlzayI6ZmFsc2UsInByb2R1Y3RUeXBlIjoiU1VQRVJDT01NQU5EUFJPRFVDVCIsInJlZnJlc2hUb2tlbkV4cGlyZWRUaW1lIjoiMjAyNC0wMy0wMiAxMTowNDoxMiIsInNlc3NzaW9uIjoiMDZiMTQ0ODhkZWRjZTRiY2JkMjU3NzE0NThmN2YwMGEiLCJzaWRJbmZvIjp7fSwidWlkIjoiNzA2MjY5NDM1IiwidXNlclR5cGUiOiJGUkVFSUFMIiwid2lmaW5kTGltaXRNYXAiOnt9fX0=.67D72647CE9F4881EECCB9B07801F5A3213F4D93EF6580645171C5C0995904FD'
     getAccessTokenHeader = {"ContentType": "application/json", "refresh_token": refreshToken}
     getAccessTokenResponse = requests.post(url=getAccessTokenUrl, headers=getAccessTokenHeader)
     accessToken = json.loads(getAccessTokenResponse.content)['data']['access_token']
@@ -78,7 +79,7 @@ def send_email():
     # 电子邮件配置
     sender_email = os.environ['SENDER_EMAIL']
     sender_password = os.environ['SENDER_PASSWORD']
-    receiver_email = 'rss@bxin.top'
+    receiver_email = 'rss@bxin.top,chushankeji@163.com,pinhsin@189.cn'
 
     current_date = datetime.now().strftime("%Y%m%d")
     # 构建邮件内容
