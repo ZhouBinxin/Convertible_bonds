@@ -41,14 +41,15 @@ def save_to_csv(data):
     row = data["tables"][0]["table"]
     jydm = row["jydm"]
     for i in range(len(jydm)):
-        desired_data.append([row["jydm"][i], row["jydm_mc"][i], row["p00868_f002"][i], row["p00868_f016"][i], row["p00868_f007"][i],
-                             row["p00868_f006"][i], row["p00868_f001"][i], row["p00868_f028"][i], row["p00868_f011"][i],
-                             row["p00868_f005"][i], row["p00868_f014"][i], row["p00868_f008"][i], row["p00868_f003"][i],
-                             row["p00868_f026"][i], row["p00868_f023"][i], row["p00868_f004"][i], row["p00868_f012"][i],
-                             row["p00868_f017"][i], row["p00868_f024"][i], row["p00868_f019"][i], row["p00868_f027"][i],
-                             row["p00868_f018"][i], row["p00868_f022"][i], row["p00868_f021"][i], row["p00868_f015"][i],
-                             row["p00868_f010"][i], row["p00868_f025"][i], row["p00868_f009"][i], row["p00868_f029"][i],
-                             row["p00868_f013"][i], row["p00868_f020"][i], row["p00868_f030"][i]])
+        desired_data.append(
+            [row["jydm"][i], row["jydm_mc"][i], row["p00868_f002"][i], row["p00868_f016"][i], row["p00868_f007"][i],
+             row["p00868_f006"][i], row["p00868_f001"][i], row["p00868_f028"][i], row["p00868_f011"][i],
+             row["p00868_f005"][i], row["p00868_f014"][i], row["p00868_f008"][i], row["p00868_f003"][i],
+             row["p00868_f026"][i], row["p00868_f023"][i], row["p00868_f004"][i], row["p00868_f012"][i],
+             row["p00868_f017"][i], row["p00868_f024"][i], row["p00868_f019"][i], row["p00868_f027"][i],
+             row["p00868_f018"][i], row["p00868_f022"][i], row["p00868_f021"][i], row["p00868_f015"][i],
+             row["p00868_f010"][i], row["p00868_f025"][i], row["p00868_f009"][i], row["p00868_f029"][i],
+             row["p00868_f013"][i], row["p00868_f020"][i], row["p00868_f030"][i]])
 
     # Rename the column headers
     new_headers = ["代码", "名称", "交易日期", "前收盘价", "开盘价", "最高价", "最低价", "收盘价", "涨跌",
@@ -83,7 +84,9 @@ def send_email():
 
     current_date = datetime.now().strftime("%Y%m%d")
     # 构建邮件内容
-    article_content = f"{current_date} \n Github:https://github.com/ZhouBinxin/Convertible_bonds"
+    github = "https://github.com/ZhouBinxin/Convertible_bonds"
+    gitee = "https://gitee.com/pinhsin/Convertible_bonds"
+    article_content = f"{current_date} \n Github:{github} \n Gitee:{gitee}"
 
     # 创建MIMEText对象
     msg = MIMEMultipart()
