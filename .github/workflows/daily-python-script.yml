@@ -28,13 +28,14 @@ jobs:
           SENDER_EMAIL: ${{ secrets.SenderEmail }}
           SENDER_PASSWORD: ${{ secrets.SenderPassword }}
 
-      - name: Commit and push files
+      - name: Move generated files to a folder
         env:
           GITHUB_TOKEN: ${{ secrets.GithubToken }}
         run: |
+          mkdir -p data  # 使用 -p 选项确保即使文件夹已经存在也不会报错
+          mv -n *.csv data/
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
           git add -A
           git commit -m "ci: update about page (automatically)" || exit 0
-          git push 
-
+          git push
