@@ -1,0 +1,30 @@
+name: Daily Python Script
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs every day at midnight
+  watch:
+    types: started
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Python script
+        run: python main.py
+        env:
+          REFRESH_TOKEN: ${{ secrets.RefreshToken }}
+          SENDER_EMAIL: ${{ secrets.SenderEmail }}
+          SENDER_PASSWORD: ${{ secrets.SenderPassword }}
+
