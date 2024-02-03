@@ -122,11 +122,13 @@ def send_email():
 
 
 def main():
-    refreshToken = os.environ['REFRESH_TOKEN']
-    access_token = get_access_token(refreshToken)
-    data = get_data(access_token)
-    save_to_csv(data)
-    send_email()
+    today = datetime.now()
+    if today.weekday() not in [5, 6]:
+        refreshToken = os.environ['REFRESH_TOKEN']
+        access_token = get_access_token(refreshToken)
+        data = get_data(access_token)
+        save_to_csv(data)
+        send_email()
 
 
 if __name__ == '__main__':
