@@ -87,15 +87,22 @@ def send_email():
     github = "https://github.com/ZhouBinxin/Convertible_bonds"
     gitee = "https://gitee.com/pinhsin/Convertible_bonds"
     article_content = f"{current_date} \n Github:{github} \n Gitee:{gitee}"
+    feedback = f"发送日期：{current_date} \n 接收邮箱：{receiver_email}"
 
     # 创建MIMEText对象
     msg = MIMEMultipart()
     msg.attach(MIMEText(article_content, 'plain'))
-
     # 设置发件人和收件人
     msg['From'] = sender_email
     msg['To'] = receiver_email
     msg['Subject'] = f'可转债数据 By binxin'
+
+    # 创建第二封邮件
+    msg2 = MIMEMultipart()
+    msg2.attach(MIMEText(feedback, 'plain'))
+    msg2['From'] = sender_email
+    msg2['To'] = "ths_action@bxin.top"
+    msg2['Subject'] = 'THS'
 
     # 添加附件
     filename = f"{current_date}.csv"
@@ -111,6 +118,7 @@ def send_email():
     with smtplib.SMTP_SSL('smtp.163.com', 465) as server:
         server.login(sender_email, sender_password)
         server.sendmail(sender_email, receiver_email, msg.as_string())
+        server.sendmail(sender_email, "ths_action@bxin.top", msg2.as_string())
 
 
 def main():
