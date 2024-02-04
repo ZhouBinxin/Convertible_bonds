@@ -2,7 +2,7 @@ name: Daily Python Script
 
 on:
   schedule:
-    - cron: '0 5 * * *'  # Runs every day at midnight
+    - cron: '0 5 * * MON-FRI'
   watch:
     types: started
 
