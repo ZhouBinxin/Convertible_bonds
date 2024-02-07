@@ -80,7 +80,7 @@ def send_email():
     # 电子邮件配置
     sender_email = os.environ['SENDER_EMAIL']
     sender_password = os.environ['SENDER_PASSWORD']
-    receiver_email = 'chushankeji@163.com,convertible_bond@bxin.top'
+    receiver_emails = ['chushankeji@163.com','pinhsin@189.cn']
 
     current_date = datetime.now().strftime("%Y%m%d")
     # 构建邮件内容
@@ -94,7 +94,7 @@ def send_email():
     msg.attach(MIMEText(article_content, 'plain'))
     # 设置发件人和收件人
     msg['From'] = sender_email
-    msg['To'] = receiver_email
+    msg['To'] = receiver_emails
     msg['Subject'] = f'可转债数据 By binxin'
 
     # # 创建第二封邮件
@@ -117,7 +117,8 @@ def send_email():
     # 连接到SMTP服务器并发送邮件
     with smtplib.SMTP_SSL('smtp.163.com', 465) as server:
         server.login(sender_email, sender_password)
-        server.sendmail(sender_email, receiver_email, msg.as_string())
+        for receiver_email in receiver_emails:
+            server.sendmail(sender_email, receiver_email, msg.as_string())
         # server.sendmail(sender_email, "ths_action@bxin.top", msg2.as_string())
 
 
