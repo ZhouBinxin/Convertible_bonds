@@ -1,13 +1,14 @@
-import os
-import requests
-import json
-from datetime import datetime
 import csv
+import json
+import os
 import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
+from datetime import datetime, timedelta
 from email import encoders
+from email.mime.base import MIMEBase
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+import requests
 
 
 def get_data(access_token):
@@ -16,9 +17,11 @@ def get_data(access_token):
     requestHeaders = {"Content-Type": "application/json",
                       "access_token": access_token}
 
-    current_date = datetime.now().strftime("%Y%m%d")
+    current_date = datetime.now()
+    yesterday = current_date - timedelta(days=1)
+    yesterday = yesterday.strftime("%Y%m%d")
     # Define the form data
-    formData = {"reportname": "p00868", "functionpara": {"edate": current_date, "zqlx": "全部"},
+    formData = {"reportname": "p00868", "functionpara": {"edate": yesterday, "zqlx": "全部"},
                 "outputpara": "jydm,jydm_mc,p00868_f002,p00868_f016,p00868_f007,p00868_f006,p00868_f001,p00868_f028,p00868_f011,p00868_f005,p00868_f014,p00868_f008,p00868_f003,p00868_f026,p00868_f023,p00868_f004,p00868_f012,p00868_f017,p00868_f024,p00868_f019,p00868_f027,p00868_f018,p00868_f022,p00868_f021,p00868_f015,p00868_f010,p00868_f025,p00868_f009,p00868_f029,p00868_f013,p00868_f020,p00868_f030"}
 
     # Send the POST request
@@ -40,18 +43,23 @@ def save_to_csv(data):
     desired_data = []
     row = data["tables"][0]["table"]
     jydm = row["jydm"]
-    for i in range(len(jydm)):
-        desired_data.append(
-            [row["jydm"][i], row["jydm_mc"][i], row["p00868_f002"][i], row["p00868_f016"][i], row["p00868_f007"][i],
-             row["p00868_f006"][i], row["p00868_f001"][i], row["p00868_f028"][i], row["p00868_f011"][i],
-             row["p00868_f005"][i], row["p00868_f014"][i], row["p00868_f008"][i], row["p00868_f003"][i],
-             row["p00868_f026"][i], row["p00868_f023"][i], row["p00868_f004"][i], row["p00868_f012"][i],
-             row["p00868_f017"][i], row["p00868_f024"][i], row["p00868_f019"][i], row["p00868_f027"][i],
-             row["p00868_f018"][i], row["p00868_f022"][i], row["p00868_f021"][i], row["p00868_f015"][i],
-             row["p00868_f010"][i], row["p00868_f025"][i], row["p00868_f009"][i], row["p00868_f029"][i],
-             row["p00868_f013"][i], row["p00868_f020"][i], row["p00868_f030"][i]])
 
-    # Rename the column headers
+    for i in range(len(jydm)):
+        row_data = [row["jydm"][i], row["jydm_mc"][i], row["p00868_f002"][i], row["p00868_f016"][i],
+                    row["p00868_f007"][i],
+                    row["p00868_f006"][i], row["p00868_f001"][i], row["p00868_f028"][i], row["p00868_f011"][i],
+                    row["p00868_f005"][i], row["p00868_f014"][i], row["p00868_f008"][i], row["p00868_f003"][i],
+                    row["p00868_f026"][i], row["p00868_f023"][i], row["p00868_f004"][i], row["p00868_f012"][i],
+                    row["p00868_f017"][i], row["p00868_f024"][i], row["p00868_f019"][i], row["p00868_f027"][i],
+                    row["p00868_f018"][i], row["p00868_f022"][i], row["p00868_f021"][i], row["p00868_f015"][i],
+                    row["p00868_f010"][i], row["p00868_f025"][i], row["p00868_f009"][i], row["p00868_f029"][i],
+                    row["p00868_f013"][i], row["p00868_f020"][i], row["p00868_f030"][i]]
+
+        # Replace "--" with "null"
+        row_data = ["null" if val == "--" else val for val in row_data]
+
+        desired_data.append(row_data)
+
     new_headers = ["代码", "名称", "交易日期", "前收盘价", "开盘价", "最高价", "最低价", "收盘价", "涨跌",
                    "涨跌幅(%)",
                    "已计息天数", "应计利息", "剩余期限(年)", "当期收益率(%)", "纯债到期收益率(%)", "纯债价值",
@@ -59,10 +67,11 @@ def save_to_csv(data):
                    "转股市盈率", "转股市净率", "套利空间", "平价/底价", "期限(年)", "发行日期",
                    "票面利率/发行参考利率(%)", "交易市场", "债券类型"]
 
-    current_date = datetime.now().strftime("%Y%m%d")
-
+    current_date = datetime.now()
+    yesterday = current_date - timedelta(days=1)
+    yesterday = yesterday.strftime("%Y%m%d")
     # Save the data to a CSV file
-    with open(f'{current_date}.csv', 'w', newline='') as csvfile:
+    with open(f'{yesterday}.csv', 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile)
         csvwriter.writerow(new_headers)
         csvwriter.writerows(desired_data)
@@ -82,12 +91,14 @@ def send_email():
     sender_password = os.environ['SENDER_PASSWORD']
     receiver_emails = ['chushankeji@163.com', 'pinhsin@189.cn']
 
-    current_date = datetime.now().strftime("%Y%m%d")
+    current_date = datetime.now()
+    yesterday = current_date - timedelta(days=1)
+    yesterday = yesterday.strftime("%Y%m%d")
     # 构建邮件内容
     github = "https://github.com/ZhouBinxin/Convertible_bonds"
     gitee = "https://gitee.com/pinhsin/Convertible_bonds"
-    article_content = f"{current_date} \n Github:{github} \n Gitee:{gitee}"
-    # feedback = f"发送日期：{current_date} \n 接收邮箱：{receiver_email}"
+    article_content = f"{yesterday} \n Github:{github} \n Gitee:{gitee}"
+    # feedback = f"发送日期：{yesterday} \n 接收邮箱：{receiver_email}"
 
     # 创建MIMEText对象
     msg = MIMEMultipart()
@@ -104,7 +115,7 @@ def send_email():
     # msg2['Subject'] = 'THS'
 
     # 添加附件
-    filename = f"{current_date}.csv"
+    filename = f"{yesterday}.csv"
     attachment = open(filename, "rb")
 
     part = MIMEBase('application', 'octet-stream')
