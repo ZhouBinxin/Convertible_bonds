@@ -9,6 +9,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 import requests
+from chinese_calendar import is_workday
 
 
 def get_data(access_token):
@@ -55,7 +56,7 @@ def save_to_csv(data):
                     row["p00868_f010"][i], row["p00868_f025"][i], row["p00868_f009"][i], row["p00868_f029"][i],
                     row["p00868_f013"][i], row["p00868_f020"][i], row["p00868_f030"][i]]
 
-        # Replace "--" with "null"
+        # 使用null代替--
         row_data = ["null" if val == "--" else val for val in row_data]
 
         desired_data.append(row_data)
@@ -133,9 +134,22 @@ def send_email():
         # server.sendmail(sender_email, "ths_action@bxin.top", msg2.as_string())
 
 
+def is_trade_day(date):
+    """
+    判断是否是交易日
+
+    :param date:
+    :return:
+    """
+    if is_workday(date):
+        if date.isoweekday() < 6:
+            return True
+    return False
+
+
 def main():
     today = datetime.now()
-    if today.weekday() not in [5, 6]:
+    if is_trade_day(today):
         refreshToken = os.environ['REFRESH_TOKEN']
         access_token = get_access_token(refreshToken)
         data = get_data(access_token)
