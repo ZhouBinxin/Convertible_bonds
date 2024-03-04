@@ -82,7 +82,12 @@ def get_access_token(refreshToken):
     getAccessTokenUrl = 'https://ft.10jqka.com.cn/api/v1/get_access_token'
     getAccessTokenHeader = {"ContentType": "application/json", "refresh_token": refreshToken}
     getAccessTokenResponse = requests.post(url=getAccessTokenUrl, headers=getAccessTokenHeader)
-    accessToken = json.loads(getAccessTokenResponse.content)['data']['access_token']
+    response = json.loads(getAccessTokenResponse.content)
+    if response['errorcode'] != 0:
+        print(response['errormsg'])
+        accessToken = None
+    else:
+        accessToken = json.loads(getAccessTokenResponse.content)['data']['access_token']
     return accessToken
 
 
@@ -150,11 +155,14 @@ def is_trade_day(date):
 def main():
     today = datetime.now()
     if is_trade_day(today):
+        # 导入.env
+        # load_dotenv()
         refreshToken = os.environ['REFRESH_TOKEN']
         access_token = get_access_token(refreshToken)
-        data = get_data(access_token)
-        save_to_csv(data)
-        send_email()
+        if access_token:
+            data = get_data(access_token)
+            save_to_csv(data)
+            send_email()
 
 
 if __name__ == '__main__':
