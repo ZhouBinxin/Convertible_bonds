@@ -162,7 +162,7 @@ def main():
         if access_token:
             data = get_data(access_token)
             save_to_csv(data)
-            send_email()
+            # send_email()
 
 
 if __name__ == '__main__':
