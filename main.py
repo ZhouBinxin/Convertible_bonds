@@ -12,36 +12,31 @@ import requests
 from chinese_calendar import is_workday
 from dotenv import load_dotenv
 
+today = datetime.now()
+yesterday = today - timedelta(days=1)
+
 
 def get_data(access_token):
-    # Define the request URL and headers
     requestURL = "https://quantapi.51ifind.com/api/v1/data_pool"
     requestHeaders = {"Content-Type": "application/json",
                       "access_token": access_token}
 
-    current_date = datetime.now()
-    yesterday = current_date - timedelta(days=1)
-    yesterday = yesterday.strftime("%Y%m%d")
-    # Define the form data
+    global yesterday
+
     formData = {"reportname": "p00868", "functionpara": {"edate": yesterday, "zqlx": "全部"},
                 "outputpara": "jydm,jydm_mc,p00868_f002,p00868_f016,p00868_f007,p00868_f006,p00868_f001,p00868_f028,p00868_f011,p00868_f005,p00868_f014,p00868_f008,p00868_f003,p00868_f026,p00868_f023,p00868_f004,p00868_f012,p00868_f017,p00868_f024,p00868_f019,p00868_f027,p00868_f018,p00868_f022,p00868_f021,p00868_f015,p00868_f010,p00868_f025,p00868_f009,p00868_f029,p00868_f013,p00868_f020,p00868_f030"}
 
-    # Send the POST request
     response = requests.post(requestURL, headers=requestHeaders, data=json.dumps(formData))
 
-    # Check if the request was successful
     if response.status_code == 200:
-        # Parse the JSON response
         data = response.json()
         return data
 
     else:
-        # Print an error message
         print("An error occurred: {}".format(response.status_code))
 
 
 def save_to_csv(data):
-    # Extract the desired data
     desired_data = []
     row = data["tables"][0]["table"]
     jydm = row["jydm"]
@@ -69,10 +64,8 @@ def save_to_csv(data):
                    "转股市盈率", "转股市净率", "套利空间", "平价/底价", "期限(年)", "发行日期",
                    "票面利率/发行参考利率(%)", "交易市场", "债券类型"]
 
-    current_date = datetime.now()
-    yesterday = current_date - timedelta(days=1)
-    yesterday = yesterday.strftime("%Y%m%d")
-    # Save the data to a CSV file
+    global yesterday
+
     with open(f'{yesterday}.csv', 'w', newline='') as csvfile:
         csvwriter = csv.writer(csvfile)
         csvwriter.writerow(new_headers)
@@ -98,10 +91,7 @@ def send_email():
     sender_password = os.environ['SENDER_PASSWORD']
     receiver_emails = ['chushankeji@163.com', 'pinhsin@189.cn']
 
-    current_date = datetime.now()
-    yesterday = current_date - timedelta(days=1)
-    yesterday = yesterday.strftime("%Y%m%d")
-    # 构建邮件内容
+    global yesterday
     github = "https://github.com/ZhouBinxin/Convertible_bonds"
     gitee = "https://gitee.com/pinhsin/Convertible_bonds"
     article_content = f"{yesterday} \n Github:{github} \n Gitee:{gitee}"
@@ -154,8 +144,9 @@ def is_trade_day(date):
 
 
 def main():
-    today = datetime.now()
-    if is_trade_day(today):
+    global yesterday
+    if is_trade_day(yesterday):
+        yesterday = yesterday.strftime("%Y%m%d")
         # 导入.env
         load_dotenv()
         refreshToken = os.environ['REFRESH_TOKEN']
