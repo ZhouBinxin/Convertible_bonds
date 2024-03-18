@@ -10,6 +10,7 @@ from email.mime.text import MIMEText
 
 import requests
 from chinese_calendar import is_workday
+from dotenv import load_dotenv
 
 
 def get_data(access_token):
@@ -84,7 +85,7 @@ def get_access_token(refreshToken):
     getAccessTokenResponse = requests.post(url=getAccessTokenUrl, headers=getAccessTokenHeader)
     response = json.loads(getAccessTokenResponse.content)
     if response['errorcode'] != 0:
-        print(response['errormsg'])
+        print(response['errmsg'])
         accessToken = None
     else:
         accessToken = json.loads(getAccessTokenResponse.content)['data']['access_token']
@@ -156,7 +157,7 @@ def main():
     today = datetime.now()
     if is_trade_day(today):
         # 导入.env
-        # load_dotenv()
+        load_dotenv()
         refreshToken = os.environ['REFRESH_TOKEN']
         access_token = get_access_token(refreshToken)
         if access_token:
