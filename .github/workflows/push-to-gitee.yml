@@ -6,21 +6,20 @@ on:
       - master
 
 jobs:
-  push:
-    runs-on: ubuntu-latest
-
+  build:
+    runs-on: ubuntu-20.04
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh/
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan gitee.com >> ~/.ssh/known_hosts
 
       - name: Push to Gitee
-        run: |
-          git remote add gitee git@gitee.com:pinhsin/convertible_bonds.git
-          git push gitee master
+        uses: Yikun/hub-mirror-action@v1.1
+        with:
+          src: github/Zhoubinxin
+          dst: gitee/PinHsin
+          dst_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          dst_token: ${{ secrets.GITEE_API }}
+          account_type: user
+          clone_style: "https"
+          debug: true
+          force_update: true
+          static_list: "Convertible_bonds"
+          timeout: '600s'  # git超时设置，超时后会自动重试git操作
