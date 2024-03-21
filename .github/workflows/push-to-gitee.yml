@@ -16,4 +16,4 @@ jobs:
           dst: gitee/PinHsin
           dst_key: ${{ secrets.SSH_PRIVATE_KEY }}
           dst_token: ${{ secrets.GITEE_API }}
-          static_list: "Convertible_bonds"
+          static_list: "convertible_bonds"
