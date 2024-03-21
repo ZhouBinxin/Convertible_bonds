@@ -9,17 +9,11 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     steps:
-
-      - name: Push to Gitee
-        uses: Yikun/hub-mirror-action@v1.1
+      - name: Black list
+        uses: Yikun/hub-mirror-action@master
         with:
           src: github/Zhoubinxin
           dst: gitee/PinHsin
           dst_key: ${{ secrets.SSH_PRIVATE_KEY }}
           dst_token: ${{ secrets.GITEE_API }}
-          account_type: user
-          clone_style: "https"
-          debug: true
-          force_update: true
           static_list: "Convertible_bonds"
-          timeout: '600s'  # git超时设置，超时后会自动重试git操作
