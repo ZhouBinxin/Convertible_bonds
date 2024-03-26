@@ -3,9 +3,9 @@ name: Push to Gitee
 on:
   schedule:
     - cron: '0 6 * *  TUE-SAT'
-#  push:
-#    branches:
-#      - master
+  push:
+    branches:
+      - master
 
 jobs:
   build:
