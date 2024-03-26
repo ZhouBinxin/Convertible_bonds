@@ -1,0 +1,53 @@
+name: Push DB
+
+on:
+  schedule:
+    - cron: '0 7 * *  TUE-SAT'
+  push:
+    branches:
+      - master
+
+jobs:
+  push_file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Python script
+        run: python bond_db.py
+
+      - name: Commit and Push to GitHub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GithubToken }}
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git add -A
+          git commit -m "ci: update data (automatically)" || exit 0
+          git push
+
+      - name: Copy files
+        run: cp -r convertible_bond.db /
+
+      - name: Checkout destination repository
+        uses: actions/checkout@v2
+        with:
+          repository: zhoubinxin/convertible_bond_script
+          token: ${{ secrets.GithubToken }}
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git add .
+          git commit -m "Add files from source repository"
+          git push
