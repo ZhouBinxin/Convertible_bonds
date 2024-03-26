@@ -1,0 +1,2 @@
+db/convertible_bond.db filter=lfs diff=lfs merge=lfs -text
+*.db filter=lfs diff=lfs merge=lfs -text

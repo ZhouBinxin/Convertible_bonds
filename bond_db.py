@@ -4,7 +4,12 @@ import os
 import pandas as pd
 from sqlalchemy import create_engine, inspect
 
-engine = create_engine('sqlite:///convertible_bond.db')
+# 确保db目录存在，如果不存在则创建
+if not os.path.exists('db'):
+    os.makedirs('db')
+
+# 修改数据库连接字符串，指定使用SQLite数据库和db目录下的convertible_bond.db文件
+engine = create_engine('sqlite:///db/convertible_bond.db')
 
 # 创建inspect对象
 inspector = inspect(engine)
